@@ -130,7 +130,6 @@ def train(args):
     for epoch in range(args.max_epochs):
         print(f"epoch {epoch+1}/{args.max_epochs}")
         model.train()
-        epoch += 1
         loss_epoch = 0
         t0 = time.time()
 
