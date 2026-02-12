@@ -7,6 +7,7 @@ import os
 from model import RENet
 from global_model import RENet_global
 from sklearn.utils import shuffle
+from tqdm import tqdm
 import pickle
 
 
@@ -112,7 +113,6 @@ def train(args):
     # ---------------------------------------------------------------------------Training Pipeline----------------------
 
     print("start training...")
-    epoch = 0
     best_mrr = 0
     s_history = s_history_data[0]
     s_history_t = s_history_data[1]
@@ -127,10 +127,9 @@ def train(args):
     o_history_test = o_history_test_data[0]
     o_history_test_t = o_history_test_data[1]
 
-    while True:
+    for epoch in range(args.max_epochs):
+        print(f"epoch {epoch+1}/{args.max_epochs}")
         model.train()
-        if epoch == args.max_epochs:
-            break
         epoch += 1
         loss_epoch = 0
         t0 = time.time()
@@ -138,10 +137,11 @@ def train(args):
         train_data_shuffle, s_history_shuffle, s_history_t_shuffle, o_history_shuffle, o_history_t_shuffle = \
             shuffle(train_data, s_history, s_history_t, o_history, o_history_t)
 
-        for batch_data, s_hist, s_hist_t, o_hist, o_hist_t in utils.make_batch2(train_data_shuffle, s_history_shuffle,
+        batch_nb = len(train_data_shuffle) // args.batch_size
+        for batch_data, s_hist, s_hist_t, o_hist, o_hist_t in tqdm(utils.make_batch2(train_data_shuffle, s_history_shuffle,
                                                                                 s_history_t_shuffle,
                                                                                 o_history_shuffle, o_history_t_shuffle,
-                                                                                args.batch_size):
+                                                                                args.batch_size), total=batch_nb):
             batch_data = torch.from_numpy(batch_data).long()
             if use_cuda:
                 batch_data = batch_data.cuda()

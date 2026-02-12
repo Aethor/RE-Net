@@ -480,6 +480,7 @@ dependencies = [
     { name = "scikit-learn" },
     { name = "torch" },
     { name = "torchvision" },
+    { name = "tqdm" },
 ]
 
 [package.metadata]
@@ -488,6 +489,7 @@ requires-dist = [
     { name = "scikit-learn", specifier = ">=1.8.0" },
     { name = "torch", specifier = "==2.9.0", index = "https://download.pytorch.org/whl/cu130" },
     { name = "torchvision", specifier = "==0.24.0" },
+    { name = "tqdm", specifier = ">=4.67.3" },
 ]
 
 [[package]]
