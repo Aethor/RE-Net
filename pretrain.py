@@ -2,6 +2,7 @@ import argparse
 import numpy as np
 import time
 import torch
+from tqdm import tqdm
 import utils
 import os
 from global_model import RENet_global
@@ -87,7 +88,8 @@ def train(args):
         train_times, true_prob_s, true_prob_o = shuffle(train_times_origin, true_prob_s, true_prob_o)
 
 
-        for batch_data, true_s, true_o in utils.make_batch(train_times, true_prob_s, true_prob_o, args.batch_size):
+        batch_nb = len(train_times) // args.batch_size
+        for batch_data, true_s, true_o in tqdm(utils.make_batch(train_times, true_prob_s, true_prob_o, args.batch_size), total=batch_nb, desc=f"e {epoch}/{args.max_epochs}"):
             
             batch_data = torch.from_numpy(batch_data)
             true_s = torch.from_numpy(true_s)

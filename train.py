@@ -128,7 +128,6 @@ def train(args):
     o_history_test_t = o_history_test_data[1]
 
     for epoch in range(args.max_epochs):
-        print(f"epoch {epoch+1}/{args.max_epochs}")
         model.train()
         loss_epoch = 0
         t0 = time.time()
@@ -137,10 +136,7 @@ def train(args):
             shuffle(train_data, s_history, s_history_t, o_history, o_history_t)
 
         batch_nb = len(train_data_shuffle) // args.batch_size
-        for batch_data, s_hist, s_hist_t, o_hist, o_hist_t in tqdm(utils.make_batch2(train_data_shuffle, s_history_shuffle,
-                                                                                s_history_t_shuffle,
-                                                                                o_history_shuffle, o_history_t_shuffle,
-                                                                                args.batch_size), total=batch_nb):
+        for batch_data, s_hist, s_hist_t, o_hist, o_hist_t in tqdm(utils.make_batch2(train_data_shuffle, s_history_shuffle, s_history_t_shuffle, o_history_shuffle, o_history_t_shuffle, args.batch_size), total=batch_nb, desc=f"e {epoch}/{args.max_epochs}"):
             batch_data = torch.from_numpy(batch_data).long()
             if use_cuda:
                 batch_data = batch_data.cuda()
