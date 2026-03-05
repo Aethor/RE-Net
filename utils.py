@@ -461,9 +461,15 @@ def soft_cross_entropy(
     return torch.mean(torch.sum(-soft_targets * logsoftmax(pred), 1))
 
 
-def get_true_distribution(
+def get_true_distribution_old(
     train_data: np.ndarray, num_s: int
 ) -> tuple[np.ndarray, np.ndarray]:
+    """
+    :param train_data: (n, 4)
+    :param num_s:
+
+    :return: two arrays of shape (t, num_s)
+    """
     true_s = np.zeros(num_s)
     true_o = np.zeros(num_s)
     true_prob_s = None
@@ -498,3 +504,38 @@ def get_true_distribution(
     true_prob_o = np.concatenate((true_prob_o, true_o.reshape(1, num_s)), axis=0)
 
     return true_prob_s, true_prob_o
+
+
+def get_true_distribution(
+    train_data: np.ndarray, num_s: int
+) -> tuple[np.ndarray, np.ndarray]:
+    """A faster version of get_true_distribution_old.  See
+    tests/test_utils.py::test_get_true_distribution_retrocompatibility
+    for a proof of retrocompatibility.
+
+    :param train_data: (n, 4)
+    :param num_s:
+
+    :return: two arrays of shape (t, num_s)
+    """
+    subjects = np.unique(train_data[:, 0])
+    timestamps = np.unique(train_data[:, 3])
+    objects = np.unique(train_data[:, 2])
+
+    true_prob_s = np.zeros((timestamps.shape[0], num_s))
+    true_prob_o = np.zeros((timestamps.shape[0], num_s))
+
+    for i, t in tqdm(enumerate(timestamps), total=timestamps.shape[0]):
+        t_train_data = train_data[train_data[:, 3] == t]
+
+        s_counter = np.zeros(num_s)
+        s_uniq, s_count = np.unique(t_train_data[:, 0], return_counts=True)
+        s_counter[s_uniq] = s_count
+        true_prob_s[i] = s_counter / t_train_data.shape[0]
+
+        o_counter = np.zeros(num_s)
+        o_uniq, o_count = np.unique(t_train_data[:, 2], return_counts=True)
+        o_counter[o_uniq] = o_count
+        true_prob_o = o_counter / t_train_data.shape[0]
+
+    return (true_prob_s, true_prob_o)
