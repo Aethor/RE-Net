@@ -536,6 +536,6 @@ def get_true_distribution(
         o_counter = np.zeros(num_s)
         o_uniq, o_count = np.unique(t_train_data[:, 2], return_counts=True)
         o_counter[o_uniq] = o_count
-        true_prob_o = o_counter / t_train_data.shape[0]
+        true_prob_o[i] = o_counter / t_train_data.shape[0]
 
     return (true_prob_s, true_prob_o)

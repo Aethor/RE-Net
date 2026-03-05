@@ -13,3 +13,4 @@ def test_get_true_distribution_retrocompatibility():
     # the first timeline of the next timestamp for the previous
     # timestamp.
     assert np.allclose(new[0][:-1], old[0][:-1], rtol=0, atol=1e-1)
+    assert np.allclose(new[1][:-1], old[1][:-1], rtol=0, atol=1e-1)
