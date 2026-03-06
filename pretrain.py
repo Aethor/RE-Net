@@ -1,3 +1,4 @@
+from msilib import Directory
 import argparse
 import numpy as np
 import time
@@ -22,9 +23,6 @@ def train(args):
     torch.manual_seed(seed)
 
 
-    os.makedirs('models', exist_ok=True)
-    os.makedirs('models/' + args.dataset +str(args.runnr), exist_ok=True)
-
     # if args.model == 0: 
     #     model_state_file = 'models/' + args.dataset + 'attn.pth'
     # elif args.model == 1:
@@ -34,14 +32,17 @@ def train(args):
     # elif args.model == 3:
     #     model_state_file = 'models/' + args.dataset + '/max' + str(args.maxpool) + 'rgcn_global.pth'
     #MODIFIED eval_paper_authors
+    os.makedirs('models', exist_ok=True)
+    directory = 'models/' + args.dataset + '/' + str(args.runnr)
+    os.makedirs(directory, exist_ok=True)
     if args.model == 0: # model_state_file = 'models/' + args.dataset + '/' +str(args.runnr)+  '/rgcn.pth'  #MODIFIED eval_paper_authors
-        model_state_file = 'models/' + args.dataset + str(args.runnr)+ 'attn.pth'
+        model_state_file = directory + '/attn.pth'
     elif args.model == 1:
-        model_state_file = 'models/' + args.dataset + str(args.runnr)+'mean.pth'
+        model_state_file = directory + '/mean.pth'
     elif args.model == 2:
-        model_state_file = 'models/' + args.dataset  + str(args.runnr)+ 'gcn.pth'
+        model_state_file = directory + '/gcn.pth'
     elif args.model == 3:
-        model_state_file = 'models/' + args.dataset + '/' +str(args.runnr)+ '/' +'/max' + str(args.maxpool) + 'rgcn_global.pth'
+        model_state_file = directory + '/max' + str(args.maxpool) + 'rgcn_global.pth'
     #end MODIFIED eval_paper_authors
     # with open('./RE-Net/data/' + args.dataset + '/train_graphs.txt', 'rb') as f:
     with open('./data/' + args.dataset + '/train_graphs.txt', 'rb') as f:

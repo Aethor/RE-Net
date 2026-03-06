@@ -53,6 +53,7 @@ class RGCNAggregator_global(nn.Module):
                 idx += 1                
                 g_list.append(graph_dict[tim.item()])
                 
+            g_list = [g.to("cuda") for g in g_list]
             batched_graph = dgl.batch(g_list)
             batched_graph.ndata['h'] = ent_embeds[batched_graph.ndata['id']].view(-1, ent_embeds.shape[1])
             move_dgl_to_cuda(batched_graph)
@@ -140,8 +141,7 @@ class RGCNAggregator_global(nn.Module):
             g_list = []
 
             for tim in timess:
-                move_dgl_to_cuda(graph_dict[tim.item()])
-                g_list.append(graph_dict[tim.item()])
+                g_list.append(graph_dict[tim.item()].to("cuda"))
 
             batched_graph = dgl.batch(g_list)
             batched_graph.ndata['h'] = ent_embeds[batched_graph.ndata['id']].view(-1, ent_embeds.shape[1])
@@ -248,10 +248,10 @@ class RGCNAggregator(nn.Module):
                     s_embed_seq_tensor_r = self.dropout(s_embed_seq_tensor_r)
 
                     s_packed_input = torch.nn.utils.rnn.pack_padded_sequence(s_embed_seq_tensor,
-                                                                            s_len_non_zero,
+                                                                            s_len_non_zero.to("cpu"),
                                                                             batch_first=True)
                     s_packed_input_r = torch.nn.utils.rnn.pack_padded_sequence(s_embed_seq_tensor_r,
-                                                                            s_len_non_zero,
+                                                                            s_len_non_zero.to("cpu"),
                                                                             batch_first=True)
                 else: # modified eval_paper_authors: added 
                     self.rgcn1(g, reverse)
