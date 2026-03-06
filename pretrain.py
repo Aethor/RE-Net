@@ -1,4 +1,3 @@
-from msilib import Directory
 import argparse
 import numpy as np
 import time
