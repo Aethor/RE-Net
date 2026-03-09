@@ -72,7 +72,7 @@ class RGCNAggregator_global(nn.Module):
 
             embed_seq_tensor = self.dropout(embed_seq_tensor)
             packed_input = torch.nn.utils.rnn.pack_padded_sequence(embed_seq_tensor,
-                                                                len_non_zero,
+                                                                len_non_zero.to("cpu"),
                                                                 batch_first=True)
         else: #else added by eval_paper_authors, to be ablt to run without cuda; modification of above.
             times = list(graph_dict.keys())
@@ -331,10 +331,10 @@ class RGCNAggregator(nn.Module):
                     s_embed_seq_tensor_r = self.dropout(s_embed_seq_tensor_r)
 
                     s_packed_input = torch.nn.utils.rnn.pack_padded_sequence(s_embed_seq_tensor,
-                                                                            s_len_non_zero,
+                                                                            s_len_non_zero.to("cpu"),
                                                                             batch_first=True)
                     s_packed_input_r = torch.nn.utils.rnn.pack_padded_sequence(s_embed_seq_tensor_r,
-                                                                            s_len_non_zero,
+                                                                            s_len_non_zero.to("cpu"),
                                                                             batch_first=True)
                 else: # modified eval_paper_authors: added 
                     self.rgcn1(g, reverse)
@@ -452,7 +452,7 @@ class MeanAggregator(nn.Module):
             s_embed_seq_tensor = self.dropout(s_embed_seq_tensor)
 
             s_packed_input = torch.nn.utils.rnn.pack_padded_sequence(s_embed_seq_tensor,
-                                                                    s_len_non_zero,
+                                                                    s_len_non_zero.to("cpu"),
                                                                     batch_first=True)
         else:
             # To get mean vector at each time
@@ -545,7 +545,7 @@ class AttnAggregator(nn.Module):
             s_embed_seq_tensor = self.dropout(s_embed_seq_tensor)
 
             s_packed_input = torch.nn.utils.rnn.pack_padded_sequence(s_embed_seq_tensor,
-                                                                    s_len_non_zero,
+                                                                    s_len_non_zero.to("cpu"),
                                                                     batch_first=True)
         else:   #modified eval_paper_authors: added use_cuda request
             s_embed_seq_tensor = torch.zeros(len(s_len_non_zero), self.seq_len, 3 * self.h_dim)
