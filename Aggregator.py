@@ -72,7 +72,7 @@ class RGCNAggregator_global(nn.Module):
 
             embed_seq_tensor = self.dropout(embed_seq_tensor)
             packed_input = torch.nn.utils.rnn.pack_padded_sequence(embed_seq_tensor,
-                                                                len_non_zero.to("cpu"),
+                                                                len_non_zero,
                                                                 batch_first=True)
         else: #else added by eval_paper_authors, to be ablt to run without cuda; modification of above.
             times = list(graph_dict.keys())
